@@ -9,31 +9,21 @@ import liveRoutes from './modules/live/live.routes';
 
 const app = express();
 
-// CORS configuration with allowed origins
-const allowedOrigins = [
-  'http://localhost:4200',
-  'http://localhost:3000',
-  'https://insighthub-cyan.vercel.app',
-  ENV.CLIENT_URL,
-];
+// CORS configuration
+const corsOptions = {
+  origin: ENV.CLIENT_URL || true, // Use env variable if set, otherwise allow all
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Session-ID'],
+  optionsSuccessStatus: 200,
+};
 
-// Remove duplicates and filter out empty strings
-const corsOrigins = [...new Set(allowedOrigins.filter(origin => origin && origin.trim() !== ''))];
+console.log(`✅ CORS Enabled for Origin: ${ENV.CLIENT_URL || 'ALL'}`);
 
-console.log('CORS Allowed Origins:', corsOrigins);
-
-// Middleware
-app.use(
-  cors({
-    origin: corsOrigins,
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    optionsSuccessStatus: 200,
-  })
-);
-// Handle preflight requests
-app.options('*', cors());
+// Apply CORS middleware to all routes
+app.use(cors(corsOptions));
+// Handle preflight requests explicitly
+app.options('*', cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use('/api/live', liveRoutes);
