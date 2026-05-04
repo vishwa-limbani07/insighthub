@@ -98,13 +98,28 @@ Respond with ONLY a valid JSON object, no markdown, no backticks, no explanation
     }
 
     return parsed;
-  } catch (error: any) {
-    // If JSON parsing fails, try to extract JSON from the response
-    if (error instanceof SyntaxError) {
+ } catch (error: any) {
+    console.error('Gemini API error:', error);
+
+    // Handle Gemini rate limit / service unavailable gracefully
+    if (error.message?.includes('503') || error.message?.includes('high demand')) {
       throw new Error(
-        'AI returned an invalid response. Please try rephrasing your question.'
+        'AI service is temporarily busy. Please try again in a moment.'
       );
     }
+
+    if (error.message?.includes('429') || error.message?.includes('quota')) {
+      throw new Error(
+        'AI rate limit reached. Please wait a minute and try again.'
+      );
+    }
+
+    if (error instanceof SyntaxError) {
+      throw new Error(
+        'AI returned an unexpected response. Please rephrase your question.'
+      );
+    }
+
     throw error;
   }
 }
