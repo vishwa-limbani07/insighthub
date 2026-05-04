@@ -1,0 +1,79 @@
+<div class="upload-container">
+  <h1>Upload Dataset</h1>
+  <p class="subtitle">Upload a CSV or JSON file to start exploring your data</p>
+
+  @if (!uploadedDataset()) {
+    <!-- Drop Zone -->
+    <div
+      class="drop-zone"
+      [class.dragging]="isDragging()"
+      [class.uploading]="isUploading()"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave($event)"
+      (drop)="onDrop($event)"
+    >
+      @if (isUploading()) {
+        <div class="uploading-state">
+          <div class="spinner"></div>
+          <p>Parsing and analyzing your data...</p>
+        </div>
+      } @else {
+        <div class="idle-state">
+          <span class="upload-icon">📂</span>
+          <p>Drag & drop your file here</p>
+          <span class="divider">or</span>
+          <label class="file-input-label">
+            Browse Files
+            <input
+              type="file"
+              accept=".csv,.json"
+              (change)="onFileSelected($event)"
+              hidden
+            />
+          </label>
+          <p class="hint">Supports CSV and JSON • Max 10MB</p>
+        </div>
+      }
+    </div>
+
+    @if (uploadError()) {
+      <div class="error-message">
+        {{ uploadError() }}
+      </div>
+    }
+  } @else {
+    <!-- Success State -->
+    <div class="success-card">
+      <span class="success-icon">✅</span>
+      <h2>{{ uploadedDataset()!.name }}</h2>
+      <div class="meta">
+        <span>{{ uploadedDataset()!.rowCount }} rows</span>
+        <span>•</span>
+        <span>{{ uploadedDataset()!.columns.length }} columns</span>
+        <span>•</span>
+        <span>{{ uploadedDataset()!.fileType | uppercase }}</span>
+      </div>
+
+      <div class="column-chips">
+        @for (col of uploadedDataset()!.columns; track col.name) {
+          <span class="chip" [attr.data-type]="col.type">
+            {{ col.name }}
+            <small>{{ col.type }}</small>
+          </span>
+        }
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" (click)="viewDataset()">
+          View & Explore
+        </button>
+        <button class="btn secondary" (click)="uploadAnother()">
+          Upload Another
+        </button>
+        <div class="nav-links">
+  <button class="nav-btn" (click)="goToLive()">📡 Live Data Demo</button>
+</div>
+      </div>
+    </div>
+  }
+</div>

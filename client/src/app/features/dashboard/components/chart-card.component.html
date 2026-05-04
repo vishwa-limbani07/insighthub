@@ -1,0 +1,50 @@
+<div class="chart-card">
+  <div class="card-header">
+    <h3>{{ title }}</h3>
+    <div class="card-actions">
+      <span class="chart-type-badge">{{ config.chartType }}</span>
+      <button class="remove-btn" (click)="removed.emit()">✕</button>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="chart-loading">
+      <div class="spinner"></div>
+      <p>Crunching numbers...</p>
+    </div>
+  } @else if (error()) {
+    <div class="chart-error">{{ error() }}</div>
+  } @else {
+    <div class="chart-body">
+      @if (isTableView) {
+        <!-- Table View -->
+        <div class="data-table">
+          <table>
+            <thead>
+              <tr>
+                <th>{{ config.xAxis }}</th>
+                <th>{{ config.aggregation }} of {{ config.yAxis }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (point of tableData(); track point.name) {
+                <tr>
+                  <td>{{ point.name }}</td>
+                  <td>{{ point.value | number:'1.0-2' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <!-- Chart.js Canvas -->
+        <canvas
+          baseChart
+          [type]="chartType"
+          [data]="chartData"
+          [options]="chartOptions"
+        ></canvas>
+      }
+    </div>
+  }
+</div>

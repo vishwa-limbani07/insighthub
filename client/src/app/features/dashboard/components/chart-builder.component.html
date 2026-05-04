@@ -1,0 +1,102 @@
+<div class="builder-overlay" (click)="closed.emit()">
+  <div class="builder-panel" (click)="$event.stopPropagation()">
+    <div class="panel-header">
+      <h2>Create Chart</h2>
+      <button class="close-btn" (click)="closed.emit()">✕</button>
+    </div>
+
+    <!-- Chart Type -->
+    <div class="field">
+      <label>Chart Type</label>
+      <div class="chart-type-grid">
+        @for (type of chartTypes; track type.value) {
+          <button
+            class="type-btn"
+            [class.active]="selectedChartType() === type.value"
+            (click)="selectedChartType.set(type.value)"
+          >
+            <span class="icon">{{ type.icon }}</span>
+            <span>{{ type.label }}</span>
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Title -->
+    <div class="field">
+      <label>Chart Title (optional)</label>
+      <input
+        type="text"
+        placeholder="Auto-generated if empty"
+        [value]="chartTitle()"
+        (input)="chartTitle.set($any($event.target).value)"
+      />
+    </div>
+
+    <!-- X-Axis -->
+    <div class="field">
+      <label>X-Axis (Category)</label>
+      <select
+        [value]="selectedXAxis()"
+        (change)="selectedXAxis.set($any($event.target).value)"
+      >
+        <option value="" disabled>Select column</option>
+        @for (col of categoryColumns; track col.name) {
+          <option [value]="col.name">{{ col.name }} ({{ col.type }})</option>
+        }
+      </select>
+    </div>
+
+    <!-- Y-Axis -->
+    <div class="field">
+      <label>Y-Axis (Value)</label>
+      <select
+        [value]="selectedYAxis()"
+        (change)="selectedYAxis.set($any($event.target).value)"
+      >
+        <option value="" disabled>Select column</option>
+        @for (col of numericColumns; track col.name) {
+          <option [value]="col.name">{{ col.name }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Aggregation -->
+    <div class="field">
+      <label>Aggregation</label>
+      <select
+        [value]="selectedAggregation()"
+        (change)="selectedAggregation.set($any($event.target).value)"
+      >
+        @for (agg of aggregations; track agg.value) {
+          <option [value]="agg.value">{{ agg.label }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Group By (optional) -->
+    @if (selectedChartType() === 'grouped-bar' || groupByColumns.length > 0) {
+      <div class="field">
+        <label>Group By (optional)</label>
+        <select
+          [value]="selectedGroupBy()"
+          (change)="selectedGroupBy.set($any($event.target).value)"
+        >
+          <option value="">None</option>
+          @for (col of groupByColumns; track col.name) {
+            <option [value]="col.name">{{ col.name }}</option>
+          }
+        </select>
+      </div>
+    }
+
+    <!-- Submit -->
+    <button
+      class="create-btn"
+      [disabled]="!isValid"
+      (click)="onSubmit()"
+    >
+      Generate Chart
+    </button>
+  </div>
+</div>

@@ -1,0 +1,42 @@
+<div class="ai-query-section">
+  <div class="query-bar">
+    <span class="ai-icon">✨</span>
+    <input
+      type="text"
+      [value]="question()"
+      (input)="question.set($any($event.target).value)"
+      (keydown)="onKeyDown($event)"
+      placeholder="Ask a question about your data..."
+      [disabled]="isLoading()"
+    />
+    <button
+      class="ask-btn"
+      (click)="askQuestion()"
+      [disabled]="!question().trim() || isLoading()"
+    >
+      @if (isLoading()) {
+        <span class="btn-spinner"></span>
+      } @else {
+        Ask AI
+      }
+    </button>
+  </div>
+
+  @if (error()) {
+    <div class="query-error">{{ error() }}</div>
+  }
+
+  <!-- Suggestion Chips -->
+  <div class="suggestions">
+    <span class="suggestions-label">Try:</span>
+    @for (suggestion of suggestions; track suggestion) {
+      <button
+        class="suggestion-chip"
+        (click)="useSuggestion(suggestion)"
+        [disabled]="isLoading()"
+      >
+        {{ suggestion }}
+      </button>
+    }
+  </div>
+</div>

@@ -1,0 +1,119 @@
+<div class="live-container">
+  <!-- Header -->
+  <div class="live-header">
+    <div class="header-left">
+      <button class="back-btn" (click)="goBack()">← Back</button>
+      <h1>
+        Live Data Feed
+        @if (liveService.isStreaming()) {
+          <span class="live-dot"></span>
+        }
+      </h1>
+      <p class="subtitle">Real-time e-commerce order simulation via SSE</p>
+    </div>
+    <button
+      class="stream-btn"
+      [class.streaming]="liveService.isStreaming()"
+      (click)="toggleStream()"
+    >
+      @if (liveService.isStreaming()) {
+        ⏹ Stop Stream
+      } @else {
+        ▶ Start Live Stream
+      }
+    </button>
+  </div>
+
+  <!-- Stats Bar -->
+  @if (liveService.orders().length > 0) {
+    <div class="stats-bar">
+      <div class="stat">
+        <span class="stat-value">{{ liveService.totalOrders() }}</span>
+        <span class="stat-label">Total Orders</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">${{ liveService.totalRevenue() | number:'1.0-0' }}</span>
+        <span class="stat-label">Total Revenue</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">
+          ${{ (liveService.totalRevenue() / (liveService.totalOrders() || 1)) | number:'1.0-0' }}
+        </span>
+        <span class="stat-label">Avg Order Value</span>
+      </div>
+      @if (liveService.latestOrder()) {
+        <div class="stat latest-order">
+          <span class="stat-value">{{ liveService.latestOrder()!.product }}</span>
+          <span class="stat-label">
+            Latest: ${{ liveService.latestOrder()!.revenue | number }} — {{ liveService.latestOrder()!.region }}
+          </span>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Charts -->
+  @if (liveService.orders().length > 0) {
+    <div class="charts-grid">
+      <!-- Revenue Over Time -->
+      <div class="chart-card full-width">
+        <h3>Revenue Over Time</h3>
+        <div class="chart-body">
+          <canvas
+            baseChart
+            [type]="revenueOverTimeType"
+            [data]="revenueOverTimeData"
+            [options]="revenueOverTimeOptions"
+          ></canvas>
+        </div>
+      </div>
+
+      <!-- Revenue by Region -->
+      <div class="chart-card">
+        <h3>Revenue by Region</h3>
+        <div class="chart-body">
+          <canvas
+            baseChart
+            [type]="revenueByRegionType"
+            [data]="revenueByRegionData"
+            [options]="revenueByRegionOptions"
+          ></canvas>
+        </div>
+      </div>
+
+      <!-- Orders by Product -->
+      <div class="chart-card">
+        <h3>Orders by Product</h3>
+        <div class="chart-body">
+          <canvas
+            baseChart
+            [type]="ordersByProductType"
+            [data]="ordersByProductData"
+            [options]="ordersByProductOptions"
+          ></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Order Feed -->
+    <div class="order-feed">
+      <h3>Recent Orders</h3>
+      <div class="feed-list">
+        @for (order of liveService.orders().slice().reverse().slice(0, 10); track order.order_id) {
+          <div class="feed-item">
+            <span class="order-id">{{ order.order_id }}</span>
+            <span class="order-product">{{ order.product }}</span>
+            <span class="order-region">{{ order.region }}</span>
+            <span class="order-revenue">${{ order.revenue | number }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="empty-state">
+      <span class="empty-icon">📡</span>
+      <h2>No live data yet</h2>
+      <p>Click "Start Live Stream" to begin receiving simulated orders</p>
+    </div>
+  }
+</div>

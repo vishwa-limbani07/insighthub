@@ -1,0 +1,55 @@
+<div class="ai-chart-card">
+  <div class="card-header">
+    <div class="ai-badge">✨ AI Generated</div>
+    <button class="remove-btn" (click)="removed.emit()">✕</button>
+  </div>
+
+  <div class="question-row">
+    <span class="q-label">Q:</span>
+    <span class="q-text">{{ question }}</span>
+  </div>
+
+  <div class="chart-body">
+    @if (isTableView) {
+      <div class="data-table">
+        <table>
+          <thead>
+            <tr>
+              <th>{{ config.xAxis }}</th>
+              <th>{{ config.aggregation }} of {{ config.yAxis }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (point of tableData(); track point.name) {
+              <tr>
+                <td>{{ point.name }}</td>
+                <td>{{ point.value | number:'1.0-2' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <canvas
+        baseChart
+        [type]="chartType"
+        [data]="chartData"
+        [options]="chartOptions"
+      ></canvas>
+    }
+  </div>
+
+  <div class="explanation">
+    <span class="exp-label">💡</span>
+    <span>{{ explanation }}</span>
+  </div>
+
+  <div class="card-footer">
+    <span class="chart-meta">
+      {{ config.chartType }} • {{ config.aggregation }} of {{ config.yAxis }} by {{ config.xAxis }}
+      @if (config.groupBy) {
+        • grouped by {{ config.groupBy }}
+      }
+    </span>
+  </div>
+</div>

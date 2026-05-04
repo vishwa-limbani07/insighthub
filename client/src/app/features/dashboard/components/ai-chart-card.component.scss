@@ -1,0 +1,101 @@
+.ai-chart-card {
+  background: #1a1a2e;
+  border-radius: 12px;
+  border: 1px solid rgba(108, 99, 255, 0.3);
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #2a2a40;
+
+  .ai-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6c63ff;
+  }
+
+  .remove-btn {
+    background: none;
+    border: none;
+    color: #555;
+    cursor: pointer;
+    font-size: 0.9rem;
+    &:hover { color: #ff3b30; }
+  }
+}
+
+.question-row {
+  padding: 0.75rem 1rem;
+  background: rgba(108, 99, 255, 0.05);
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+
+  .q-label {
+    font-weight: 700;
+    color: #6c63ff;
+    font-size: 0.85rem;
+  }
+
+  .q-text {
+    color: #e0e0e0;
+    font-size: 0.85rem;
+  }
+}
+
+.chart-body {
+  padding: 1rem;
+  min-height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.explanation {
+  padding: 0.6rem 1rem;
+  background: rgba(255, 206, 86, 0.05);
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  font-size: 0.8rem;
+  color: #aaa;
+
+  .exp-label {
+    flex-shrink: 0;
+  }
+}
+
+.card-footer {
+  padding: 0.5rem 1rem;
+  border-top: 1px solid #2a2a40;
+
+  .chart-meta {
+    font-size: 0.7rem;
+    color: #555;
+    text-transform: capitalize;
+  }
+}
+
+.data-table {
+  width: 100%;
+  overflow-x: auto;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+
+    th, td {
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #2a2a40;
+    }
+
+    th { color: #aaa; font-weight: 600; }
+    td { color: #ccc; }
+  }
+}
