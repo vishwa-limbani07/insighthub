@@ -9,24 +9,40 @@ import liveRoutes from './modules/live/live.routes';
 
 const app = express();
 
-// CORS configuration
-const corsOptions = {
-  origin: ENV.CLIENT_URL || true, // Use env variable if set, otherwise allow all
+const allowedOrigins = [
+  'http://localhost:4200',
+  'http://localhost:3000',
+  'https://insighthub-cyan.vercel.app',
+  ENV.CLIENT_URL,
+].filter((o) => o && o.trim() !== '');
+
+const corsOrigins = [...new Set(allowedOrigins)];
+console.log('CORS Allowed Origins:', corsOrigins);
+
+const corsOptions: cors.CorsOptions = {
+  origin: (origin, callback) => {
+    // Allow requests with no origin (curl, Postman, server-to-server)
+    if (!origin) return callback(null, true);
+    if (corsOrigins.includes(origin)) return callback(null, true);
+    callback(new Error(`CORS: Origin ${origin} not allowed`));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Session-ID'],
-  optionsSuccessStatus: 200,
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'x-session-id',       // ← this was missing
+  ],
+  exposedHeaders: ['x-session-id'],
+  optionsSuccessStatus: 204,
 };
 
-console.log(`✅ CORS Enabled for Origin: ${ENV.CLIENT_URL || 'ALL'}`);
-
-// Apply CORS middleware to all routes
+// Apply CORS before everything else
 app.use(cors(corsOptions));
-// Handle preflight requests explicitly
-app.options('*', cors(corsOptions));
+app.options('*', cors(corsOptions)); // Handle preflight for all routes
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
-app.use('/api/live', liveRoutes);
 
 // Routes
 app.get('/api/health', (_req, res) => {
@@ -40,6 +56,7 @@ app.get('/api/health', (_req, res) => {
 app.use('/api/datasets', datasetRoutes);
 app.use('/api/charts', chartRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/live', liveRoutes);
 
 // Global error handler
 app.use(
@@ -56,7 +73,6 @@ app.use(
   }
 );
 
-// Start server
 const startServer = async () => {
   await connectDB();
   app.listen(ENV.PORT, () => {
