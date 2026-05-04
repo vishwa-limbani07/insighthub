@@ -9,15 +9,31 @@ import liveRoutes from './modules/live/live.routes';
 
 const app = express();
 
+// CORS configuration with allowed origins
+const allowedOrigins = [
+  'http://localhost:4200',
+  'http://localhost:3000',
+  'https://insighthub-cyan.vercel.app',
+  ENV.CLIENT_URL,
+];
+
+// Remove duplicates and filter out empty strings
+const corsOrigins = [...new Set(allowedOrigins.filter(origin => origin && origin.trim() !== ''))];
+
+console.log('CORS Allowed Origins:', corsOrigins);
+
 // Middleware
 app.use(
   cors({
-    origin: ENV.CLIENT_URL,
+    origin: corsOrigins,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
+    optionsSuccessStatus: 200,
   })
 );
+// Handle preflight requests
+app.options('*', cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use('/api/live', liveRoutes);
