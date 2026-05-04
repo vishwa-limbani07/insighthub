@@ -1,10 +1,10 @@
+// ============================================
+// dashboard.component.ts — Redesigned
+// ============================================
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  DatasetService,
-  DatasetSummary,
-} from '../../core/services/dataset.service';
+import { DatasetService, DatasetSummary } from '../../core/services/dataset.service';
 import { ChartConfig } from '../../core/services/chart.service';
 import { AIQueryResponse } from '../../core/services/ai.service';
 import { ChartBuilderComponent } from './components/chart-builder.component';
@@ -47,24 +47,16 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
-    if (!id) {
-      this.router.navigate(['/upload']);
-      return;
-    }
+    if (!id) { this.router.navigate(['/upload']); return; }
 
     this.datasetService.getAll().subscribe({
       next: (datasets: DatasetSummary[]) => {
         const found = datasets.find((d: DatasetSummary) => d._id === id);
-        if (found) {
-          this.dataset.set(found);
-        } else {
-          this.router.navigate(['/upload']);
-        }
+        if (found) { this.dataset.set(found); }
+        else { this.router.navigate(['/upload']); }
         this.isLoading.set(false);
       },
-      error: () => {
-        this.router.navigate(['/upload']);
-      },
+      error: () => { this.router.navigate(['/upload']); },
     });
   }
 
@@ -74,15 +66,12 @@ export class DashboardComponent implements OnInit {
   }
 
   onAIQueryResult(result: AIQueryResponse): void {
-    this.aiCharts.update((prev) => [
-      {
-        question: result.question,
-        config: result.config,
-        explanation: result.explanation,
-        data: result.data,
-      },
-      ...prev,
-    ]);
+    this.aiCharts.update((prev) => [{
+      question: result.question,
+      config: result.config,
+      explanation: result.explanation,
+      data: result.data,
+    }, ...prev]);
   }
 
   removeChart(index: number): void {
@@ -93,7 +82,5 @@ export class DashboardComponent implements OnInit {
     this.aiCharts.update((prev) => prev.filter((_: AIChartItem, i: number) => i !== index));
   }
 
-  get datasetId(): string {
-    return this.dataset()?._id || '';
-  }
+  get datasetId(): string { return this.dataset()?._id || ''; }
 }

@@ -3,8 +3,10 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'upload',
-    pathMatch: 'full',
+    loadComponent: () =>
+      import('./features/landing/landing.component').then(
+        (m) => m.LandingComponent
+      ),
   },
   {
     path: 'upload',
@@ -26,11 +28,16 @@ export const routes: Routes = [
       import('./features/dashboard/dashboard.component').then(
         (m) => m.DashboardComponent
       ),
-  },{
-  path: 'live',
-  loadComponent: () =>
-    import('./features/live-feed/live-feed.component').then(
-      (m) => m.LiveFeedComponent
-    ),
-},
+  },
+  {
+    path: 'live',
+    loadComponent: () =>
+      import('./features/live-feed/live-feed.component').then(
+        (m) => m.LiveFeedComponent
+      ),
+  },
+  {
+    path: '**',
+    redirectTo: '',
+  },
 ];

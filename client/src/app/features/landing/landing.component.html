@@ -1,0 +1,157 @@
+<div class="landing">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-eyebrow">
+          <span class="eyebrow-dot"></span>
+          AI-Powered Analytics Dashboard
+        </div>
+        <h1 class="hero-title">
+          Turn raw data into<br/>
+          <span class="gradient-text">actionable insights</span>
+        </h1>
+        <p class="hero-desc">
+          Upload any dataset. Get interactive charts in seconds.
+          Ask questions in plain English and let AI build the perfect visualization.
+        </p>
+        <div class="hero-actions">
+          <button class="btn-hero" (click)="goToUpload()">
+            Start Exploring
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </button>
+          <button class="btn-hero-secondary" (click)="goToLive()">
+            View Live Demo
+          </button>
+        </div>
+      </div>
+
+      <!-- Hero Visual -->
+      <div class="hero-visual">
+        <div class="visual-card card-1">
+          <div class="mini-chart bar-chart">
+            <div class="bar" style="height: 45%"></div>
+            <div class="bar" style="height: 72%"></div>
+            <div class="bar" style="height: 58%"></div>
+            <div class="bar" style="height: 90%"></div>
+            <div class="bar" style="height: 65%"></div>
+          </div>
+          <span class="card-label">Revenue by Region</span>
+        </div>
+        <div class="visual-card card-2">
+          <div class="mini-query">
+            <span class="query-icon">✨</span>
+            <span class="query-text">Show me sales trends...</span>
+          </div>
+        </div>
+        <div class="visual-card card-3">
+          <div class="mini-stat">
+            <span class="stat-num">$248K</span>
+            <span class="stat-label">Total Revenue</span>
+            <span class="stat-change">+12.5%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="section-header">
+        <h2>Everything you need to<br/>understand your data</h2>
+        <p>From upload to insight in under a minute. No setup, no configuration, no learning curve.</p>
+      </div>
+
+      <div class="features-grid">
+        @for (feature of features; track feature.title; let i = $index) {
+          <div class="feature-card" [style.animation-delay]="(i * 100) + 'ms'">
+            <div class="feature-icon" [innerHTML]="feature.icon"></div>
+            <h3>{{ feature.title }}</h3>
+            <p>{{ feature.desc }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works">
+    <div class="container">
+      <div class="section-header">
+        <h2>Three steps to insight</h2>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <h3>Upload</h3>
+          <p>Drag & drop a CSV or JSON file. Column types are detected automatically.</p>
+        </div>
+        <div class="step-connector">
+          <svg width="40" height="2" viewBox="0 0 40 2"><line x1="0" y1="1" x2="40" y2="1" stroke="var(--color-border)" stroke-width="2" stroke-dasharray="4 4"/></svg>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <h3>Visualize</h3>
+          <p>Build charts manually or ask AI a question in natural language.</p>
+        </div>
+        <div class="step-connector">
+          <svg width="40" height="2" viewBox="0 0 40 2"><line x1="0" y1="1" x2="40" y2="1" stroke="var(--color-border)" stroke-width="2" stroke-dasharray="4 4"/></svg>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <h3>Discover</h3>
+          <p>Explore patterns, compare metrics, and export your findings.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tech Stack -->
+  <section class="tech-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Built with modern tools</h2>
+      </div>
+      <div class="tech-grid">
+        @for (tech of techStack; track tech.name) {
+          <div class="tech-card">
+            <span class="tech-name">{{ tech.name }}</span>
+            <span class="tech-role">{{ tech.role }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="container">
+      <div class="cta-box">
+        <h2>Ready to explore your data?</h2>
+        <p>No sign-up required. Upload a dataset and start building charts instantly.</p>
+        <button class="btn-hero" (click)="goToUpload()">
+          Get Started Free
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-brand">InsightHub</span>
+        <span class="footer-text">Built by Vishwa · Portfolio Project</span>
+      </div>
+    </div>
+  </footer>
+
+</div>

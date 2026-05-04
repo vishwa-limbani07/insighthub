@@ -1,10 +1,10 @@
+// ============================================
+// dataset-detail.component.ts — Redesigned
+// ============================================
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  DatasetService,
-  DatasetPreview,
-} from '../../core/services/dataset.service';
+import { DatasetService, DatasetPreview } from '../../core/services/dataset.service';
 
 @Component({
   selector: 'app-dataset-detail',
@@ -26,38 +26,34 @@ export class DatasetDetailComponent implements OnInit {
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
-    if (!id) {
-      this.router.navigate(['/upload']);
-      return;
-    }
+    if (!id) { this.router.navigate(['/upload']); return; }
 
     this.datasetService.getPreview(id).subscribe({
-      next: (data) => {
-        this.dataset.set(data);
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        this.error.set(err.error?.error || 'Failed to load dataset');
-        this.isLoading.set(false);
-      },
+      next: (data: DatasetPreview) => { this.dataset.set(data); this.isLoading.set(false); },
+      error: (err: any) => { this.error.set(err.error?.error || 'Failed to load'); this.isLoading.set(false); },
     });
   }
 
   getTypeColor(type: string): string {
     const colors: Record<string, string> = {
-      number: '#4caf50',
-      date: '#2196f3',
-      category: '#ff9800',
-      string: '#9e9e9e',
-      boolean: '#e91e63',
+      number: '#059669', date: '#2563EB', category: '#D97706',
+      string: '#64748B', boolean: '#DB2777',
     };
-    return colors[type] || '#9e9e9e';
+    return colors[type] || '#64748B';
   }
-goToDashboard(): void {
-  const id = this.route.snapshot.paramMap.get('id');
-  this.router.navigate(['/dashboard', id]);
-}
-  goBack(): void {
-    this.router.navigate(['/upload']);
+
+  getTypeBg(type: string): string {
+    const bgs: Record<string, string> = {
+      number: '#F0FDF4', date: '#EFF6FF', category: '#FFFBEB',
+      string: '#F7F8FA', boolean: '#FDF2F8',
+    };
+    return bgs[type] || '#F7F8FA';
+  }
+
+  goBack(): void { this.router.navigate(['/upload']); }
+
+  goToDashboard(): void {
+    const id = this.route.snapshot.paramMap.get('id');
+    this.router.navigate(['/dashboard', id]);
   }
 }

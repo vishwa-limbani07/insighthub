@@ -1,75 +1,100 @@
-<div class="dashboard-container">
-  @if (isLoading()) {
-    <div class="loading">Loading dashboard...</div>
-  } @else if (dataset()) {
-    <!-- Header -->
-    <div class="dashboard-header">
-      <div class="header-left">
-        <button class="back-btn" (click)="router.navigate(['/datasets', datasetId])">
-          ← Back to Preview
+<div class="dashboard-page">
+  <div class="container">
+    @if (isLoading()) {
+      <div class="loading-state">
+        <div class="skel skel-header"></div>
+        <div class="skel skel-query"></div>
+        <div class="skel-grid">
+          <div class="skel skel-chart"></div>
+          <div class="skel skel-chart"></div>
+        </div>
+      </div>
+    } @else if (dataset()) {
+      <!-- Header -->
+      <div class="dash-header">
+        <div class="header-left">
+          <button class="back-link" (click)="router.navigate(['/datasets', datasetId])">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+            </svg>
+            {{ dataset()!.name }}
+          </button>
+          <div class="header-meta">
+            <span class="meta-pill">{{ dataset()!.rowCount }} rows</span>
+            <span class="meta-pill">{{ dataset()!.columns.length }} columns</span>
+          </div>
+        </div>
+        <button class="btn btn-primary" (click)="showBuilder.set(true)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Add Chart
         </button>
-        <h1>{{ dataset()!.name }}</h1>
-        <p class="meta">
-          {{ dataset()!.rowCount }} rows • {{ dataset()!.columns.length }} columns
-        </p>
       </div>
-      <button class="add-chart-btn" (click)="showBuilder.set(true)">
-        + Add Chart
-      </button>
-    </div>
 
-    <!-- AI Query Bar -->
-    <app-ai-query-bar
-      [datasetId]="datasetId"
-      (queryResult)="onAIQueryResult($event)"
-    />
-
-    <!-- AI Generated Charts -->
-    @if (aiCharts().length > 0) {
-      <div class="section-label">✨ AI Generated</div>
-      <div class="charts-grid">
-        @for (aiChart of aiCharts(); track $index) {
-          <app-ai-chart-card
-            [config]="aiChart.config"
-            [data]="aiChart.data"
-            [question]="aiChart.question"
-            [explanation]="aiChart.explanation"
-            (removed)="removeAIChart($index)"
-          />
-        }
-      </div>
-    }
-
-    <!-- Manual Charts -->
-    @if (charts().length > 0) {
-      <div class="section-label">📊 Your Charts</div>
-      <div class="charts-grid">
-        @for (chart of charts(); track $index) {
-          <app-chart-card
-            [datasetId]="datasetId"
-            [config]="chart"
-            (removed)="removeChart($index)"
-          />
-        }
-      </div>
-    }
-
-    <!-- Empty State -->
-    @if (charts().length === 0 && aiCharts().length === 0) {
-      <div class="empty-state">
-        <span class="empty-icon">📊</span>
-        <h2>No charts yet</h2>
-        <p>Ask a question above or click "Add Chart" to get started</p>
-      </div>
-    }
-
-    <!-- Chart Builder Modal -->
-    @if (showBuilder()) {
-      <app-chart-builder
-        [columns]="dataset()!.columns"
-        (chartRequested)="onChartRequested($event)"
-        (closed)="showBuilder.set(false)"
+      <!-- AI Query Bar -->
+      <app-ai-query-bar
+        [datasetId]="datasetId"
+        (queryResult)="onAIQueryResult($event)"
       />
+
+      <!-- AI Charts -->
+      @if (aiCharts().length > 0) {
+        <div class="chart-section">
+          <h3 class="section-label">
+            <span class="label-icon">✨</span> AI Generated
+          </h3>
+          <div class="charts-grid">
+            @for (aiChart of aiCharts(); track $index) {
+              <app-ai-chart-card
+                [config]="aiChart.config"
+                [data]="aiChart.data"
+                [question]="aiChart.question"
+                [explanation]="aiChart.explanation"
+                (removed)="removeAIChart($index)"
+              />
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Manual Charts -->
+      @if (charts().length > 0) {
+        <div class="chart-section">
+          <h3 class="section-label">Your Charts</h3>
+          <div class="charts-grid">
+            @for (chart of charts(); track $index) {
+              <app-chart-card
+                [datasetId]="datasetId"
+                [config]="chart"
+                (removed)="removeChart($index)"
+              />
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Empty State -->
+      @if (charts().length === 0 && aiCharts().length === 0) {
+        <div class="empty-state">
+          <div class="empty-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="1.5">
+              <rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/>
+            </svg>
+          </div>
+          <h2>No charts yet</h2>
+          <p>Ask a question above or click "Add Chart" to visualize your data</p>
+        </div>
+      }
+
+      <!-- Builder Modal -->
+      @if (showBuilder()) {
+        <app-chart-builder
+          [columns]="dataset()!.columns"
+          (chartRequested)="onChartRequested($event)"
+          (closed)="showBuilder.set(false)"
+        />
+      }
     }
-  }
+  </div>
 </div>

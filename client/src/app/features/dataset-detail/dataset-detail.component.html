@@ -1,94 +1,103 @@
-<div class="detail-container">
-  @if (isLoading()) {
-    <div class="loading">Loading dataset...</div>
-  } @else if (error()) {
-    <div class="error">{{ error() }}</div>
-  } @else if (dataset()) {
-    <div class="header">
-        <div class="title-row">
-  <h1>{{ dataset()!.name }}</h1>
-  <div class="meta">
-    <span>{{ dataset()!.rowCount }} rows</span>
-    <span>•</span>
-    <span>{{ dataset()!.columns.length }} columns</span>
-    <span>•</span>
-    <span>{{ dataset()!.fileType | uppercase }}</span>
-  </div>
-</div>
-<button class="dashboard-btn" (click)="goToDashboard()">
-  📊 Open Dashboard
-</button>
-      <button class="back-btn" (click)="goBack()">← Back</button>
-      <div class="title-row">
+<div class="detail-page">
+  <div class="container">
+    @if (isLoading()) {
+      <div class="skeleton-page">
+        <div class="skel skel-title"></div>
+        <div class="skel skel-subtitle"></div>
+        <div class="skel-grid">
+          <div class="skel skel-card"></div>
+          <div class="skel skel-card"></div>
+          <div class="skel skel-card"></div>
+        </div>
+        <div class="skel skel-table"></div>
+      </div>
+    } @else if (error()) {
+      <div class="error-state">
+        <p>{{ error() }}</p>
+        <button class="btn btn-secondary" (click)="goBack()">Go Back</button>
+      </div>
+    } @else if (dataset()) {
+      <!-- Header -->
+      <div class="detail-header">
+        <div class="header-top">
+          <button class="back-link" (click)="goBack()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+            </svg>
+            Back
+          </button>
+          <button class="btn btn-primary" (click)="goToDashboard()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/>
+            </svg>
+            Open Dashboard
+          </button>
+        </div>
         <h1>{{ dataset()!.name }}</h1>
-        <div class="meta">
-          <span>{{ dataset()!.rowCount }} rows</span>
-          <span>•</span>
-          <span>{{ dataset()!.columns.length }} columns</span>
-          <span>•</span>
-          <span>{{ dataset()!.fileType | uppercase }}</span>
+        <div class="header-stats">
+          <span class="stat-pill">{{ dataset()!.rowCount }} rows</span>
+          <span class="stat-pill">{{ dataset()!.columns.length }} columns</span>
+          <span class="stat-pill type-pill">{{ dataset()!.fileType | uppercase }}</span>
         </div>
       </div>
-    </div>
 
-    <!-- Column Info -->
-    <div class="columns-section">
-      <h3>Detected Columns</h3>
-      <div class="column-grid">
-        @for (col of dataset()!.columns; track col.name) {
-          <div class="column-card">
-            <div class="col-header">
-              <span
-                class="type-dot"
-                [style.background]="getTypeColor(col.type)"
-              ></span>
-              <strong>{{ col.name }}</strong>
-              <span class="type-badge">{{ col.type }}</span>
+      <!-- Column Cards -->
+      <div class="section">
+        <h3 class="section-label">Detected Columns</h3>
+        <div class="column-cards">
+          @for (col of dataset()!.columns; track col.name) {
+            <div class="col-card">
+              <div class="col-card-head">
+                <span class="col-dot" [style.background]="getTypeColor(col.type)"></span>
+                <span class="col-name">{{ col.name }}</span>
+                <span class="col-type-badge" [style.background]="getTypeBg(col.type)" [style.color]="getTypeColor(col.type)">
+                  {{ col.type }}
+                </span>
+              </div>
+              <div class="col-card-stats">
+                <span>{{ col.uniqueCount }} unique</span>
+                <span class="dot-sep">·</span>
+                <span>{{ col.nullCount }} nulls</span>
+              </div>
+              <div class="col-samples">
+                @for (val of col.sampleValues.slice(0, 4); track $index) {
+                  <code>{{ val }}</code>
+                }
+              </div>
             </div>
-            <div class="col-stats">
-              <span>{{ col.uniqueCount }} unique</span>
-              <span>{{ col.nullCount }} nulls</span>
-            </div>
-            <div class="sample-values">
-              @for (val of col.sampleValues; track $index) {
-                <code>{{ val }}</code>
-              }
-            </div>
-          </div>
-        }
+          }
+        </div>
       </div>
-    </div>
 
-    <!-- Data Preview Table -->
-    <div class="table-section">
-      <h3>Data Preview (first {{ dataset()!.preview.length }} rows)</h3>
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th class="row-num">#</th>
-              @for (col of dataset()!.columns; track col.name) {
-                <th>
-                  {{ col.name }}
-                  <small [style.color]="getTypeColor(col.type)">
-                    {{ col.type }}
-                  </small>
-                </th>
-              }
-            </tr>
-          </thead>
-          <tbody>
-            @for (row of dataset()!.preview; track $index) {
+      <!-- Data Table -->
+      <div class="section">
+        <h3 class="section-label">Data Preview <span class="preview-count">(first {{ dataset()!.preview.length }} rows)</span></h3>
+        <div class="table-container">
+          <table>
+            <thead>
               <tr>
-                <td class="row-num">{{ $index + 1 }}</td>
+                <th class="row-num-th">#</th>
                 @for (col of dataset()!.columns; track col.name) {
-                  <td>{{ row[col.name] ?? '—' }}</td>
+                  <th>
+                    <span class="th-name">{{ col.name }}</span>
+                    <span class="th-type" [style.color]="getTypeColor(col.type)">{{ col.type }}</span>
+                  </th>
                 }
               </tr>
-            }
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              @for (row of dataset()!.preview; track $index) {
+                <tr>
+                  <td class="row-num">{{ $index + 1 }}</td>
+                  @for (col of dataset()!.columns; track col.name) {
+                    <td>{{ row[col.name] ?? '—' }}</td>
+                  }
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
-  }
+    }
+  </div>
 </div>

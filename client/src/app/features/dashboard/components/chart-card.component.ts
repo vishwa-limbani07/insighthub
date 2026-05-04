@@ -1,47 +1,31 @@
+// ============================================
+// chart-card.component.ts — Redesigned for light theme
+// ============================================
+// ONLY the color/options need to change. The logic stays the same.
+// Replace the private colors and buildOptions method in your existing file.
+// Below is the FULL file for a clean replacement.
+// ============================================
+
 import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  OnInit,
-  signal,
-  ViewChild,
+  Component, Input, Output, EventEmitter, OnInit, signal, ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartType as ChartJSType } from 'chart.js';
 import {
-  Chart,
-  BarController,
-  LineController,
-  PieController,
-  ArcElement,
-  BarElement,
-  LineElement,
-  PointElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend,
-  Filler,
+  Chart, BarController, LineController, PieController,
+  ArcElement, BarElement, LineElement, PointElement,
+  CategoryScale, LinearScale, Tooltip, Legend, Filler,
 } from 'chart.js';
-import { ChartConfig, ChartDataPoint, ChartService, ChartResponse, GroupedChartDataPoint } from '../../../core/services/chart.service';
+import {
+  ChartService, ChartConfig, ChartDataPoint,
+  GroupedChartDataPoint, ChartResponse,
+} from '../../../core/services/chart.service';
 
-
-// Register Chart.js components
 Chart.register(
-  BarController,
-  LineController,
-  PieController,
-  ArcElement,
-  BarElement,
-  LineElement,
-  PointElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend,
-  Filler
+  BarController, LineController, PieController,
+  ArcElement, BarElement, LineElement, PointElement,
+  CategoryScale, LinearScale, Tooltip, Legend, Filler
 );
 
 @Component({
@@ -59,18 +43,15 @@ export class ChartCardComponent implements OnInit {
 
   isLoading = signal(true);
   error = signal<string | null>(null);
-
-  // Chart.js config objects
   chartType: ChartJSType = 'bar';
   chartData: ChartConfiguration['data'] = { labels: [], datasets: [] };
   chartOptions: ChartConfiguration['options'] = {};
-
-  // For table view
   tableData = signal<ChartDataPoint[]>([]);
 
+  // Updated palette for light theme
   private colors = [
-    '#6c63ff', '#ff6384', '#36a2eb', '#ffce56',
-    '#4bc0c0', '#9966ff', '#ff9f40', '#c9cbcf',
+    '#4F46E5', '#EC4899', '#14B8A6', '#F59E0B',
+    '#8B5CF6', '#06B6D4', '#F97316', '#64748B',
   ];
 
   constructor(private chartService: ChartService) {}
@@ -82,27 +63,18 @@ export class ChartCardComponent implements OnInit {
   }
 
   get title(): string {
-    return (
-      this.config.title ||
-      `${this.config.aggregation} of ${this.config.yAxis} by ${this.config.xAxis}`
-    );
+    return this.config.title || `${this.config.aggregation} of ${this.config.yAxis} by ${this.config.xAxis}`;
   }
 
-  get isTableView(): boolean {
-    return this.config.chartType === 'table';
-  }
+  get isTableView(): boolean { return this.config.chartType === 'table'; }
 
   private loadChartData(): void {
     this.isLoading.set(true);
     this.error.set(null);
-
     this.chartService.getChartData(this.datasetId, this.config).subscribe({
       next: (response: ChartResponse) => {
-        if (this.isTableView) {
-          this.tableData.set(response.data as ChartDataPoint[]);
-        } else {
-          this.buildChartData(response.data);
-        }
+        if (this.isTableView) { this.tableData.set(response.data as ChartDataPoint[]); }
+        else { this.buildChartData(response.data); }
         this.isLoading.set(false);
       },
       error: (err: any) => {
@@ -112,9 +84,7 @@ export class ChartCardComponent implements OnInit {
     });
   }
 
-  private buildChartData(
-    data: ChartDataPoint[] | GroupedChartDataPoint[]
-  ): void {
+  private buildChartData(data: ChartDataPoint[] | GroupedChartDataPoint[]): void {
     if (this.config.groupBy && data.length > 0 && 'series' in data[0]) {
       this.buildGroupedChartData(data as GroupedChartDataPoint[]);
     } else {
@@ -124,91 +94,66 @@ export class ChartCardComponent implements OnInit {
 
   private buildGroupedChartData(grouped: GroupedChartDataPoint[]): void {
     const labels = grouped.map((d: GroupedChartDataPoint) => d.name);
-
-    // Collect all unique series names
     const seriesNames = new Set<string>();
     grouped.forEach((d: GroupedChartDataPoint) =>
-      d.series.forEach((s: { name: string; value: number }) =>
-        seriesNames.add(s.name)
-      )
+      d.series.forEach((s: { name: string; value: number }) => seriesNames.add(s.name))
     );
-
-    const datasets = Array.from(seriesNames).map(
-      (seriesName: string, i: number) => ({
-        label: seriesName,
-        data: grouped.map((d: GroupedChartDataPoint) => {
-          const found = d.series.find(
-            (s: { name: string; value: number }) => s.name === seriesName
-          );
-          return found ? found.value : 0;
-        }),
-        backgroundColor: this.colors[i % this.colors.length],
-        borderColor: this.colors[i % this.colors.length],
-        borderWidth:
-          this.config.chartType === 'line' ||
-          this.config.chartType === 'area'
-            ? 2
-            : 0,
-        fill: this.config.chartType === 'area',
-        tension: 0.3,
-      })
-    );
-
+    const datasets = Array.from(seriesNames).map((seriesName: string, i: number) => ({
+      label: seriesName,
+      data: grouped.map((d: GroupedChartDataPoint) => {
+        const found = d.series.find((s: { name: string; value: number }) => s.name === seriesName);
+        return found ? found.value : 0;
+      }),
+      backgroundColor: this.colors[i % this.colors.length] + '20',
+      borderColor: this.colors[i % this.colors.length],
+      borderWidth: this.config.chartType === 'line' || this.config.chartType === 'area' ? 2 : 1,
+      fill: this.config.chartType === 'area',
+      tension: 0.4,
+      borderRadius: 6,
+    }));
     this.chartData = { labels, datasets };
   }
 
   private buildSimpleChartData(simple: ChartDataPoint[]): void {
     const labels = simple.map((d: ChartDataPoint) => d.name);
     const values = simple.map((d: ChartDataPoint) => d.value);
-
     if (this.config.chartType === 'pie') {
       this.chartData = {
         labels,
-        datasets: [
-          {
-            data: values,
-            backgroundColor: labels.map(
-              (_: string, i: number) => this.colors[i % this.colors.length]
-            ),
-          },
-        ],
+        datasets: [{
+          data: values,
+          backgroundColor: labels.map((_: string, i: number) => this.colors[i % this.colors.length] + 'CC'),
+          borderColor: '#FFFFFF',
+          borderWidth: 2,
+        }],
       };
     } else {
       this.chartData = {
         labels,
-        datasets: [
-          {
-            label: `${this.config.aggregation} of ${this.config.yAxis}`,
-            data: values,
-            backgroundColor: this.colors[0],
-            borderColor: this.colors[0],
-            borderWidth:
-              this.config.chartType === 'line' ||
-              this.config.chartType === 'area'
-                ? 2
-                : 0,
-            fill: this.config.chartType === 'area',
-            tension: 0.3,
-          },
-        ],
+        datasets: [{
+          label: `${this.config.aggregation} of ${this.config.yAxis}`,
+          data: values,
+          backgroundColor: this.colors[0] + '20',
+          borderColor: this.colors[0],
+          borderWidth: this.config.chartType === 'line' || this.config.chartType === 'area' ? 2 : 1,
+          fill: this.config.chartType === 'area',
+          tension: 0.4,
+          borderRadius: 6,
+        }],
       };
     }
   }
 
   private mapChartType(type: string): ChartJSType {
     const mapping: Record<string, ChartJSType> = {
-      bar: 'bar',
-      'grouped-bar': 'bar',
-      line: 'line',
-      area: 'line',
-      pie: 'pie',
+      bar: 'bar', 'grouped-bar': 'bar', line: 'line', area: 'line', pie: 'pie',
     };
     return mapping[type] || 'bar';
   }
 
+  // LIGHT THEME chart options
   private buildOptions(): ChartConfiguration['options'] {
     const isPie = this.config.chartType === 'pie';
-
     return {
       responsive: true,
       maintainAspectRatio: false,
@@ -216,49 +161,36 @@ export class ChartCardComponent implements OnInit {
         legend: {
           display: !!this.config.groupBy || isPie,
           position: 'bottom' as const,
-          labels: {
-            color: '#aaa',
-            padding: 15,
-            font: { size: 11 },
-          },
+          labels: { color: '#5C5F6A', padding: 16, font: { size: 11, family: 'DM Sans' }, usePointStyle: true, pointStyleWidth: 8 },
         },
         tooltip: {
-          backgroundColor: '#1a1a2e',
-          titleColor: '#e0e0e0',
-          bodyColor: '#ccc',
-          borderColor: '#2a2a40',
-          borderWidth: 1,
-          padding: 10,
+          backgroundColor: '#111318',
+          titleColor: '#FFFFFF',
+          bodyColor: '#E4E5EA',
+          borderColor: '#2A2A40',
+          borderWidth: 0,
+          padding: 12,
           cornerRadius: 8,
+          titleFont: { size: 12, weight: 600, family: 'DM Sans' },
+          bodyFont: { size: 11, family: 'DM Sans' },
         },
       },
-      scales: isPie
-        ? {}
-        : {
-            x: {
-              ticks: { color: '#888', font: { size: 11 } },
-              grid: { color: 'rgba(255,255,255,0.05)' },
-              title: {
-                display: true,
-                text: this.config.xAxis,
-                color: '#aaa',
-              },
-            },
-            y: {
-              ticks: { color: '#888', font: { size: 11 } },
-              grid: { color: 'rgba(255,255,255,0.05)' },
-              title: {
-                display: true,
-                text: this.config.yAxis,
-                color: '#aaa',
-              },
-              beginAtZero: true,
-            },
-          },
-      animation: {
-        duration: 600,
-        easing: 'easeOutQuart' as const,
+      scales: isPie ? {} : {
+        x: {
+          ticks: { color: '#8B8E99', font: { size: 11, family: 'DM Sans' } },
+          grid: { color: '#F0F1F4', drawTicks: false },
+          border: { display: false },
+          title: { display: true, text: this.config.xAxis, color: '#5C5F6A', font: { size: 11, weight: 500, family: 'DM Sans' } },
+        },
+        y: {
+          ticks: { color: '#8B8E99', font: { size: 11, family: 'DM Sans' }, padding: 8 },
+          grid: { color: '#F0F1F4', drawTicks: false },
+          border: { display: false },
+          title: { display: true, text: this.config.yAxis, color: '#5C5F6A', font: { size: 11, weight: 500, family: 'DM Sans' } },
+          beginAtZero: true,
+        },
       },
+      animation: { duration: 500, easing: 'easeOutQuart' as const },
     };
   }
 }
