@@ -9,37 +9,23 @@ import liveRoutes from './modules/live/live.routes';
 
 const app = express();
 
-const allowedOrigins = [
-  'http://localhost:4200',
-  'http://localhost:3000',
-  'https://insighthub-cyan.vercel.app',
-  ENV.CLIENT_URL,
-].filter((o) => o && o.trim() !== '');
+// For portfolio projects, allow all origins — simplest and most reliable
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,PATCH,OPTIONS');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Content-Type, Authorization, x-session-id'
+  );
 
-const corsOrigins = [...new Set(allowedOrigins)];
-console.log('CORS Allowed Origins:', corsOrigins);
+  // Respond immediately to preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end();
+  }
 
-const corsOptions: cors.CorsOptions = {
-  origin: (origin, callback) => {
-    // Allow requests with no origin (curl, Postman, server-to-server)
-    if (!origin) return callback(null, true);
-    if (corsOrigins.includes(origin)) return callback(null, true);
-    callback(new Error(`CORS: Origin ${origin} not allowed`));
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: [
-    'Content-Type',
-    'Authorization',
-    'x-session-id',       // ← this was missing
-  ],
-  exposedHeaders: ['x-session-id'],
-  optionsSuccessStatus: 204,
-};
-
-// Apply CORS before everything else
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // Handle preflight for all routes
+  next();
+});
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
