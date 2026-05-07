@@ -264,15 +264,26 @@
 
   .live-header {
     flex-direction: column;
+    align-items: flex-start;
   }
+
+  .stream-btn { align-self: flex-start; }
+
+  .chart-card .chart-body { height: 220px; }
 }
 
 @media (max-width: 640px) {
   .live-page { padding: var(--space-4) 0 var(--space-10); }
-  .stats-bar { grid-template-columns: 1fr; }
+  .stats-bar { grid-template-columns: repeat(2, 1fr); }
 
   .feed-item {
+    padding: var(--space-2) var(--space-3);
     .order-id { display: none; }
     .order-region { display: none; }
+    .order-revenue { width: auto; }
   }
+}
+
+@media (max-width: 400px) {
+  .stats-bar { grid-template-columns: 1fr; }
 }
