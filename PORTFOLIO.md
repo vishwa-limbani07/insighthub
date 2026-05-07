@@ -1,4 +1,4 @@
-# InsightHub — Portfolio Project Documentation
+# Vizora — Portfolio Project Documentation
 
 > **Built by:** Vishwa Limbani  
 > **Stack:** Angular 21 · Node.js/Express · MongoDB · Claude AI · Chart.js · Socket.IO  
@@ -8,7 +8,7 @@
 
 ## Project Overview
 
-InsightHub is an AI-powered data analytics platform. Users upload a CSV or JSON dataset, and the app automatically detects column types, generates interactive charts, and lets users ask questions in plain English — the AI then builds the perfect visualization in response. A live feed mode streams real-time mock order data with live charts updating in sub-second intervals.
+Vizora is an AI-powered data analytics platform. Users upload a CSV or JSON dataset, and the app automatically detects column types, generates interactive charts, and lets users ask questions in plain English — the AI then builds the perfect visualization in response. A live feed mode streams real-time mock order data with live charts updating in sub-second intervals.
 
 ---
 
@@ -49,15 +49,15 @@ Server (Express + TypeScript)
 
 ### General / Overview
 
-**Q: Walk me through InsightHub — what does it do and who is it for?**
+**Q: Walk me through Vizora — what does it do and who is it for?**
 
-InsightHub is a self-serve analytics tool. The target user is someone who has data (say, a sales CSV or a JSON export from another tool) but doesn't know how to write SQL or use Tableau. They upload the file, the app parses and understands the schema automatically, and within seconds they're looking at charts. The AI layer means they can type "show me revenue by region as a bar chart" and get exactly that — no configuration required.
+Vizora is a self-serve analytics tool. The target user is someone who has data (say, a sales CSV or a JSON export from another tool) but doesn't know how to write SQL or use Tableau. They upload the file, the app parses and understands the schema automatically, and within seconds they're looking at charts. The AI layer means they can type "show me revenue by region as a bar chart" and get exactly that — no configuration required.
 
 ---
 
 **Q: Why did you build this project?**
 
-I wanted to explore the intersection of AI and data visualization — specifically how LLMs can reduce the friction between raw data and insight. Most BI tools require you to know the schema and write queries. InsightHub removes both barriers. It was also a good full-stack challenge: file parsing, type inference, AI tool use, real-time streaming, and a polished UI all in one project.
+I wanted to explore the intersection of AI and data visualization — specifically how LLMs can reduce the friction between raw data and insight. Most BI tools require you to know the schema and write queries. Vizora removes both barriers. It was also a good full-stack challenge: file parsing, type inference, AI tool use, real-time streaming, and a polished UI all in one project.
 
 ---
 

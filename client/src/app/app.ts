@@ -18,7 +18,7 @@ import { CommonModule } from '@angular/common';
               <rect x="17" y="3" width="4" height="18" rx="1"/>
             </svg>
           </span>
-          <span class="brand-text">InsightHub</span>
+          <span class="brand-text">Vizora</span>
         </a>
 
         <div class="nav-links" [class.open]="mobileMenuOpen">

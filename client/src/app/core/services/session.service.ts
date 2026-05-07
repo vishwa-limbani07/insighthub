@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 @Injectable({ providedIn: 'root' })
 export class SessionService {
-  private readonly STORAGE_KEY = 'insighthub_session_id';
+  private readonly STORAGE_KEY = 'vizora_session_id';
 
   getSessionId(): string {
     let sessionId = localStorage.getItem(this.STORAGE_KEY);

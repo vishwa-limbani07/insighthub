@@ -1,5 +1,5 @@
 {
-  "name": "insighthub",
+  "name": "vizora",
   "scripts": {
     "client": "cd client && ng serve",
     "server": "cd server && npm run dev",

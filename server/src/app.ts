@@ -62,7 +62,7 @@ app.use(
 const startServer = async () => {
   await connectDB();
   app.listen(ENV.PORT, () => {
-    console.log(`🚀 InsightHub server running on port ${ENV.PORT}`);
+    console.log(`🚀 Vizora server running on port ${ENV.PORT}`);
   });
 };
 

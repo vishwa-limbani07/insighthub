@@ -1,8 +1,8 @@
-# InsightHub
+# Vizora
 
 A self-service analytics dashboard that turns raw data into interactive visualizations. Upload CSV/JSON datasets, build charts with a visual configurator, or ask questions in plain English and let AI generate the perfect chart.
 
-**Live Demo:** [insighthub.vercel.app](https://insighthub.vercel.app) · **Backend:** [insighthub-api.onrender.com](https://insighthub-api.onrender.com)
+**Live Demo:** [vizora.vercel.app](https://vizora.vercel.app) · **Backend:** [vizora-api.onrender.com](https://vizora-api.onrender.com)
 
 ---
 
@@ -37,7 +37,7 @@ A self-service analytics dashboard that turns raw data into interactive visualiz
 ## Architecture
 
 ```
-insighthub/
+vizora/
 ├── client/                    # Angular 21 frontend
 │   └── src/app/
 │       ├── core/              # Services, interceptors
@@ -97,8 +97,8 @@ insighthub/
 
 1. **Clone the repo**
 ```bash
-git clone https://github.com/vishwalimbani/insighthub.git
-cd insighthub
+git clone https://github.com/vishwalimbani/vizora.git
+cd vizora
 ```
 
 2. **Backend setup**
