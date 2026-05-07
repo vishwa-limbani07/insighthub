@@ -606,7 +606,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto var(--space-5);
+  margin: 20px auto var(--space-5);
   position: relative;
   z-index: 1;
 }
@@ -637,6 +637,7 @@
   flex-wrap: wrap;
   position: relative;
   z-index: 1;
+  margin-bottom: 20px;
 }
 
 .btn-cta-primary {
