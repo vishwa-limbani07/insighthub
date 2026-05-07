@@ -1,21 +1,27 @@
 <div class="live-page">
   <div class="container">
-    <!-- Header -->
+
+    <!-- ===== HEADER ===== -->
     <div class="live-header">
       <div class="header-left">
         <button class="back-link" (click)="goBack()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
           </svg>
-          Back
+          Back to Home
         </button>
         <h1>
+          <span class="page-title-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+            </svg>
+          </span>
           Live Data Feed
           @if (liveService.isStreaming()) {
             <span class="live-dot"></span>
           }
         </h1>
-        <p class="subtitle">Real-time e-commerce order simulation via Server-Sent Events</p>
+        <p class="subtitle">Real-time e-commerce orders streaming via WebSocket — charts update every second as new orders arrive.</p>
       </div>
       <button
         class="stream-btn"
@@ -23,83 +29,197 @@
         (click)="toggleStream()"
       >
         @if (liveService.isStreaming()) {
-          ⏹ Stop Stream
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+          Stop Stream
         } @else {
-          ▶ Start Live Stream
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Start Live Stream
         }
       </button>
     </div>
 
-    <!-- Stats -->
+    <!-- ===== STATS BAR (only after data arrives) ===== -->
     @if (liveService.orders().length > 0) {
       <div class="stats-bar">
         <div class="stat">
-          <span class="stat-value">{{ liveService.totalOrders() }}</span>
-          <span class="stat-label">Total Orders</span>
+          <div class="stat-icon orders">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+          </div>
+          <div class="stat-body">
+            <span class="stat-value">{{ liveService.totalOrders() | number }}</span>
+            <span class="stat-label">Total Orders</span>
+          </div>
         </div>
         <div class="stat">
-          <span class="stat-value">${{ liveService.totalRevenue() | number:'1.0-0' }}</span>
-          <span class="stat-label">Total Revenue</span>
+          <div class="stat-icon revenue">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+          </div>
+          <div class="stat-body">
+            <span class="stat-value">${{ liveService.totalRevenue() | number:'1.0-0' }}</span>
+            <span class="stat-label">Total Revenue</span>
+          </div>
         </div>
         <div class="stat">
-          <span class="stat-value">
-            ${{ (liveService.totalRevenue() / (liveService.totalOrders() || 1)) | number:'1.0-0' }}
-          </span>
-          <span class="stat-label">Avg Order Value</span>
+          <div class="stat-icon avg">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/>
+            </svg>
+          </div>
+          <div class="stat-body">
+            <span class="stat-value">${{ (liveService.totalRevenue() / (liveService.totalOrders() || 1)) | number:'1.0-0' }}</span>
+            <span class="stat-label">Avg Order Value</span>
+          </div>
         </div>
         @if (liveService.latestOrder()) {
           <div class="stat latest-order">
-            <span class="stat-value">{{ liveService.latestOrder()!.product }}</span>
-            <span class="stat-label">
-              Latest: ${{ liveService.latestOrder()!.revenue | number }} — {{ liveService.latestOrder()!.region }}
-            </span>
+            <div class="stat-icon latest">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>
+              </svg>
+            </div>
+            <div class="stat-body">
+              <span class="stat-value">{{ liveService.latestOrder()!.product }}</span>
+              <span class="stat-label">Latest · ${{ liveService.latestOrder()!.revenue | number }} · {{ liveService.latestOrder()!.region }}</span>
+            </div>
           </div>
         }
       </div>
     }
 
-    <!-- Charts -->
+    <!-- ===== CHARTS ===== -->
     @if (liveService.orders().length > 0) {
+      <div class="section-label-row">
+        <span class="section-lbl">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
+          Live Charts
+        </span>
+        <span class="section-sub">Updating in real time</span>
+      </div>
       <div class="charts-grid">
         <div class="chart-card full-width">
-          <h3>Revenue Over Time</h3>
+          <div class="chart-card-header">
+            <h3>Revenue Over Time</h3>
+            <span class="chart-badge">Line</span>
+          </div>
           <div class="chart-body">
             <canvas baseChart [type]="revenueOverTimeType" [data]="revenueOverTimeData" [options]="revenueOverTimeOptions"></canvas>
           </div>
         </div>
         <div class="chart-card">
-          <h3>Revenue by Region</h3>
+          <div class="chart-card-header">
+            <h3>Revenue by Region</h3>
+            <span class="chart-badge">Bar</span>
+          </div>
           <div class="chart-body">
             <canvas baseChart [type]="revenueByRegionType" [data]="revenueByRegionData" [options]="revenueByRegionOptions"></canvas>
           </div>
         </div>
         <div class="chart-card">
-          <h3>Orders by Product</h3>
+          <div class="chart-card-header">
+            <h3>Orders by Product</h3>
+            <span class="chart-badge">Doughnut</span>
+          </div>
           <div class="chart-body">
             <canvas baseChart [type]="ordersByProductType" [data]="ordersByProductData" [options]="ordersByProductOptions"></canvas>
           </div>
         </div>
       </div>
 
+      <!-- Order Feed -->
+      <div class="section-label-row">
+        <span class="section-lbl">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          Order Feed
+        </span>
+        <span class="section-sub">Latest 10 orders — newest on top</span>
+      </div>
       <div class="order-feed">
-        <h3>Recent Orders</h3>
+        <div class="feed-thead">
+          <span class="feed-col-id">Order ID</span>
+          <span class="feed-col-product">Product</span>
+          <span class="feed-col-region">Region</span>
+          <span class="feed-col-revenue">Revenue</span>
+        </div>
         <div class="feed-list">
           @for (order of liveService.orders().slice().reverse().slice(0, 10); track order.order_id) {
             <div class="feed-item">
               <span class="order-id">{{ order.order_id }}</span>
               <span class="order-product">{{ order.product }}</span>
-              <span class="order-region">{{ order.region }}</span>
+              <span class="order-region">
+                <span class="region-badge">{{ order.region }}</span>
+              </span>
               <span class="order-revenue">${{ order.revenue | number }}</span>
             </div>
           }
         </div>
       </div>
+
     } @else {
+      <!-- ===== EMPTY STATE ===== -->
       <div class="empty-state">
-        <div class="empty-icon">📡</div>
+        <div class="empty-visual">
+          <div class="empty-chart-preview">
+            <div class="ep-bar" style="--h:40%"></div>
+            <div class="ep-bar" style="--h:65%"></div>
+            <div class="ep-bar" style="--h:50%"></div>
+            <div class="ep-bar" style="--h:80%"></div>
+            <div class="ep-bar" style="--h:55%"></div>
+          </div>
+        </div>
         <h2>No live data yet</h2>
-        <p>Click "Start Live Stream" to begin receiving simulated orders</p>
+        <p>Click <strong>Start Live Stream</strong> to begin receiving simulated e-commerce orders. Charts, stats, and the order feed will populate in real time.</p>
+
+        <div class="empty-features">
+          <div class="empty-feature">
+            <div class="ef-icon revenue">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <div>
+              <strong>Revenue over time</strong>
+              <span>Live line chart updating every second</span>
+            </div>
+          </div>
+          <div class="empty-feature">
+            <div class="ef-icon region">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
+            </div>
+            <div>
+              <strong>Regional breakdown</strong>
+              <span>Bar chart comparing North / South / East / West</span>
+            </div>
+          </div>
+          <div class="empty-feature">
+            <div class="ef-icon product">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+            </div>
+            <div>
+              <strong>Product distribution</strong>
+              <span>Doughnut chart by product category</span>
+            </div>
+          </div>
+          <div class="empty-feature">
+            <div class="ef-icon feed">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            </div>
+            <div>
+              <strong>Order ticker</strong>
+              <span>Real-time feed of the last 10 incoming orders</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="start-btn" (click)="toggleStream()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Start Live Stream
+        </button>
       </div>
     }
+
   </div>
 </div>
