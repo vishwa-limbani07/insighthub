@@ -442,27 +442,6 @@
   &.feed     { background: #FFF1F2; color: #E11D48; }
 }
 
-.start-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: 11px var(--space-7);
-  background: var(--color-accent);
-  color: white;
-  font-size: var(--text-sm);
-  font-weight: 700;
-  border: none;
-  border-radius: var(--radius-md);
-  transition: all var(--transition-fast);
-  box-shadow: 0 2px 8px rgba(79,70,229,0.3);
-
-  &:hover {
-    background: var(--color-accent-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(79,70,229,0.35);
-  }
-}
-
 // --- Responsive ---
 @media (max-width: 768px) {
   .charts-grid { grid-template-columns: 1fr; }
